@@ -18,7 +18,7 @@ from lektor.utils import profile_func
 from lektor.utils import secure_url
 
 
-version = metadata.version("Lektor")
+version = "0.0.0" #metadata.version("Lektor")
 
 
 @click.group(cls=AliasedGroup)
