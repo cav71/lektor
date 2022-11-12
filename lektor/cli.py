@@ -336,8 +336,9 @@ def server_cmd(
     """
     from lektor.devserver import run_server
 
-    if output_path is None:
-        output_path = ctx.get_default_output_path()
+    output_path = os.path.join(os.getcwd(), output_path or ctx.get_default_output_path())
+    ctx.get_default_output_path()
+
     ctx.load_plugins(extra_flags=extra_flags)
     click.echo(" * Project path: %s" % ctx.get_project().project_path)
     click.echo(" * Output path: %s" % output_path)

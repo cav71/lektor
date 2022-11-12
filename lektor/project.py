@@ -107,7 +107,7 @@ class Project:
         config = self.open_config()
         output_path = config.get("project.output_path")
         if output_path:
-            return os.path.join(self.tree, os.path.normpath(output_path))
+            return os.path.join(self.tree, os.path.normpath(output_path.format(cwd=os.getcwd())))
 
         return os.path.join(get_cache_dir(), "builds", self.id)
 
