@@ -33,6 +33,16 @@ def extraflag(cli):
     )(cli)
 
 
+def defineflag(cli):
+    return click.option(
+        "-D",
+        "--define",
+        envvar="LEKTOR_DEFINE",
+        help="Adds to the jinja2 a variable `d`."
+        "The value passed is a json structure",
+    )(cli)
+
+
 class AliasedGroup(click.Group):
 
     # pylint: disable=inconsistent-return-statements

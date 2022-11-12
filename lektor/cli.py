@@ -1,4 +1,5 @@
 # pylint: disable=import-outside-toplevel
+import contextlib
 import os
 import sys
 import time
@@ -7,6 +8,7 @@ import warnings
 import click
 
 from lektor.cli_utils import AliasedGroup
+from lektor.cli_utils import defineflag
 from lektor.cli_utils import echo_json
 from lektor.cli_utils import extraflag
 from lektor.cli_utils import pass_context
@@ -17,8 +19,9 @@ from lektor.project import Project
 from lektor.utils import profile_func
 from lektor.utils import secure_url
 
-
-version = "0.0.0" #metadata.version("Lektor")
+version = None
+with contextlib.suppress(metadata.PackageNotFoundError):
+    version = metadata.version("Lektor")
 
 
 @click.group(cls=AliasedGroup)
@@ -82,6 +85,7 @@ def cli(ctx, project=None, language=None):
     "`.lektor` inside the output path.",
 )
 @extraflag
+@defineflag
 @click.option("--profile", is_flag=True, help="Enable build profiler.")
 @pass_context
 def build_cmd(
@@ -94,6 +98,7 @@ def build_cmd(
     buildstate_path,
     profile,
     extra_flags,
+    define,
 ):
     """Builds the entire project into the final artifacts.
 
@@ -112,6 +117,8 @@ def build_cmd(
     If the build fails the exit code will be `1` otherwise `0`.  This can be
     used by external scripts to only deploy on successful build for instance.
     """
+    from json import loads
+
     from lektor.builder import Builder
     from lektor.reporter import CliReporter
 
@@ -121,6 +128,8 @@ def build_cmd(
     ctx.load_plugins(extra_flags=extra_flags)
 
     env = ctx.get_env()
+    if define:
+        env.jinja_env.globals["d"] = loads(define)
 
     def _build():
         builder = Builder(
@@ -170,8 +179,9 @@ def build_cmd(
 )
 @click.confirmation_option(help="Confirms the cleaning.")
 @extraflag
+@defineflag
 @pass_context
-def clean_cmd(ctx, output_path, verbosity, extra_flags):
+def clean_cmd(ctx, output_path, verbosity, extra_flags, define):
     """Cleans the entire build folder.
 
     If not build folder is provided, the default build folder of the project
@@ -220,8 +230,9 @@ def clean_cmd(ctx, output_path, verbosity, extra_flags):
     "be used for authentication of the deployment.",
 )
 @extraflag
+@defineflag
 @pass_context
-def deploy_cmd(ctx, server, output_path, extra_flags, **credentials):
+def deploy_cmd(ctx, server, output_path, extra_flags, define, **credentials):
     """This command deploys the entire contents of the build folder
     (`--output-path`) onto a configured remote server.  The name of the
     server must fit the name from a target in the project configuration.
@@ -236,6 +247,7 @@ def deploy_cmd(ctx, server, output_path, extra_flags, **credentials):
 
     For more information see the deployment chapter in the documentation.
     """
+    from json import loads
     from lektor.publisher import publish, PublishError
 
     if output_path is None:
@@ -244,6 +256,8 @@ def deploy_cmd(ctx, server, output_path, extra_flags, **credentials):
     ctx.load_plugins(extra_flags=extra_flags)
     env = ctx.get_env()
     config = env.load_config()
+    if define:
+        env.jinja_env.globals["d"] = loads(define)
 
     if server is None:
         server_info = config.get_default_server()
@@ -314,9 +328,20 @@ def deploy_cmd(ctx, server, output_path, extra_flags, **credentials):
     help="Increases the verbosity of the logging.",
 )
 @extraflag
+@defineflag
 @click.option("--browse", is_flag=True)
+@click.option(
+    "--no-reload",
+    "reload",
+    is_flag=True,
+    flag_value=False,
+    default=True,
+    help="Disable the live reloading.",
+)
 @pass_context
-def server_cmd(ctx, host, port, output_path, prune, verbosity, extra_flags, browse):
+def server_cmd(
+    ctx, host, port, output_path, prune, verbosity, extra_flags, define, browse, reload
+):
     """The server command will launch a local server for development.
 
     Lektor's development server will automatically build all files into
@@ -324,11 +349,13 @@ def server_cmd(ctx, host, port, output_path, prune, verbosity, extra_flags, brow
     works, but also at the same time serve up the website on a local
     HTTP server.
     """
+    from json import loads
     from lektor.devserver import run_server
 
-    if output_path is None:
-        output_path = ctx.get_default_output_path()
+    ctx.get_env().jinja_env.globals["d"] = define or loads(define)
+
     ctx.load_plugins(extra_flags=extra_flags)
+
     click.echo(" * Project path: %s" % ctx.get_project().project_path)
     click.echo(" * Output path: %s" % output_path)
     run_server(
@@ -341,6 +368,7 @@ def server_cmd(ctx, host, port, output_path, prune, verbosity, extra_flags, brow
         extra_flags=extra_flags,
         lektor_dev=os.environ.get("LEKTOR_DEV") == "1",
         browse=browse,
+        reload=reload,
     )
 
 
