@@ -1,14 +1,16 @@
 # pylint: disable=import-outside-toplevel
+import contextlib
 import os
 import sys
 import time
 import warnings
-import contextlib
+
 import click
 
 from lektor.cli_utils import AliasedGroup
+from lektor.cli_utils import defineflag
 from lektor.cli_utils import echo_json
-from lektor.cli_utils import extraflag, defineflag
+from lektor.cli_utils import extraflag
 from lektor.cli_utils import pass_context
 from lektor.cli_utils import pruneflag
 from lektor.cli_utils import validate_language
@@ -256,7 +258,6 @@ def deploy_cmd(ctx, server, output_path, extra_flags, define, **credentials):
     config = env.load_config()
     if define:
         env.jinja_env.globals["d"] = loads(define)
-
 
     if server is None:
         server_info = config.get_default_server()

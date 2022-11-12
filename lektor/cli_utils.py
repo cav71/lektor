@@ -39,7 +39,7 @@ def defineflag(cli):
         "--define",
         envvar="LEKTOR_DEFINE",
         help="Adds to the jinja2 a variable `d`."
-        "The value passed is a json structure"
+        "The value passed is a json structure",
     )(cli)
 
 
