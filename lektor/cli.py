@@ -126,7 +126,8 @@ def build_cmd(
     ctx.load_plugins(extra_flags=extra_flags)
 
     env = ctx.get_env()
-    env.jinja_env.globals["d"] = define or loads(define)
+    if define:
+        env.jinja_env.globals["d"] = loads(define)
 
     def _build():
         builder = Builder(
@@ -244,6 +245,7 @@ def deploy_cmd(ctx, server, output_path, extra_flags, define, **credentials):
 
     For more information see the deployment chapter in the documentation.
     """
+    from json import loads
     from lektor.publisher import publish, PublishError
 
     if output_path is None:
@@ -252,7 +254,8 @@ def deploy_cmd(ctx, server, output_path, extra_flags, define, **credentials):
     ctx.load_plugins(extra_flags=extra_flags)
     env = ctx.get_env()
     config = env.load_config()
-    env.jinja_env.globals["d"] = define or loads(define)
+    if define:
+        env.jinja_env.globals["d"] = loads(define)
 
 
     if server is None:
