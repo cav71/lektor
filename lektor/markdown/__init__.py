@@ -71,6 +71,7 @@ class Markdown:
         key = controller.get_cache_key()
         result = self.__cache.get(key) if key is not None else None
         if result is None:
+            self.record.pad.env.plugin_controller.emit("markdown-before-rendering", markdown=self)
             result = controller.render(self.source, self.record, self.__field_options)
             if key is not None:
                 self.__cache[key] = result
