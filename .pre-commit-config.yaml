@@ -1,5 +1,6 @@
 repos:
   - repo: local
+    hooks:
       - id: ruff
         name: ruff
         description: "Run 'ruff' for extremely fast Python linting"
