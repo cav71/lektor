@@ -281,3 +281,8 @@ module = [
     "lektor.admin.*",
 ]
 warn_return_any = false
+
+[tool.ruff]
+exclude = [
+    "lektor/cli.py",
+]
