@@ -1,20 +1,57 @@
-from __future__ import annotations
-from pathlib import Path
-from typing import Any
+import copy
+import os
+import re
+from collections import OrderedDict
+from urllib.parse import urlsplit
 
-from .config_legacy import Config # noqa - reexport
-from .config_legacy import ServerInfo # noqa - reexport
-from .config_legacy import update_config_from_ini # noqa - reexport
-from .config_legacy import DEFAULT_CONFIG # noqa - reexport
+from inifile import IniFile
+from werkzeug.utils import cached_property
+
+from lektor.constants import PRIMARY_ALT
+from lektor.i18n import get_i18n_block
+from lektor.utils import bool_from_string
+from lektor.utils import secure_url
 
 
-def from_inifile_to_dict(path: Path) -> dict[str, Any]:
-    from copy import deepcopy
-    from inifile import IniFile
-
-    values = deepcopy(DEFAULT_CONFIG)
-    update_config_from_ini(values, IniFile(path))
-    return values
+DEFAULT_CONFIG = {
+    "EPHEMERAL_RECORD_CACHE_SIZE": 500,
+    "ATTACHMENT_TYPES": {
+        # Only enable image formats here that we can handle in imagetools.
+        # Right now this is limited to jpg, png and gif.
+        ".jpg": "image",
+        ".jpeg": "image",
+        ".png": "image",
+        ".gif": "image",
+        ".svg": "image",
+        ".avi": "video",
+        ".mpg": "video",
+        ".mpeg": "video",
+        ".wmv": "video",
+        ".ogv": "video",
+        ".mp4": "video",
+        ".mp3": "audio",
+        ".wav": "audio",
+        ".ogg": "audio",
+        ".pdf": "document",
+        ".doc": "document",
+        ".docx": "document",
+        ".htm": "document",
+        ".html": "document",
+        ".txt": "text",
+        ".log": "text",
+    },
+    "PROJECT": {
+        "name": None,
+        "locale": "en_US",
+        "url": None,
+        "url_style": "relative",
+    },
+    "THEME_SETTINGS": {},
+    "PACKAGES": {},
+    "ALTERNATIVES": OrderedDict(),
+    "PRIMARY_ALTERNATIVE": None,
+    "SERVERS": {},
+}
 
 
 def update_config_from_ini(config, inifile):
@@ -29,11 +66,11 @@ def update_config_from_ini(config, inifile):
         elif sect.startswith("alternatives."):
             alt = sect.split(".")[1]
             config["ALTERNATIVES"][alt] = {
-                "name": get_i18n_block(inifile, f"alternatives.{alt}.name"),
-                "url_prefix": inifile.get(f"alternatives.{alt}.url_prefix"),
-                "url_suffix": inifile.get(f"alternatives.{alt}.url_suffix"),
-                "primary": inifile.get_bool(f"alternatives.{alt}.primary"),
-                "locale": inifile.get(f"alternatives.{alt}.locale", "en_US"),
+                "name": get_i18n_block(inifile, "alternatives.%s.name" % alt),
+                "url_prefix": inifile.get("alternatives.%s.url_prefix" % alt),
+                "url_suffix": inifile.get("alternatives.%s.url_suffix" % alt),
+                "primary": inifile.get_bool("alternatives.%s.primary" % alt),
+                "locale": inifile.get("alternatives.%s.locale" % alt, "en_US"),
             }
 
     for alt, alt_data in config["ALTERNATIVES"].items():
