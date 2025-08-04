@@ -1,0 +1,26 @@
+{
+    "attachment_types": {
+        ".jpg": "image",
+        ".jpeg": "image",
+        ".png": "image",
+        ".gif": "image",
+        ".svg": "image",
+        ".avi": "video",
+        ".mpg": "video",
+        ".mpeg": "video",
+        ".wmv": "video",
+        ".ogv": "video",
+        ".mp4": "video",
+        ".mp3": "audio",
+        ".wav": "audio",
+        ".ogg": "audio",
+        ".pdf": "document",
+        ".doc": "document",
+        ".docx": "document",
+        ".htm": "document",
+        ".html": "document",
+        ".txt": "text",
+        ".log": "text",
+        ".foo": "text"
+    }
+}
