@@ -2,11 +2,11 @@
 import os
 import sys
 import warnings
-from importlib import metadata
 from itertools import chain
 
 import click
 
+from lektor.version import get_version
 from lektor.cli_utils import AliasedGroup
 from lektor.cli_utils import echo_json
 from lektor.cli_utils import extraflag
@@ -17,9 +17,6 @@ from lektor.cli_utils import validate_language
 from lektor.devcli import cli as devcli
 from lektor.project import Project
 from lektor.utils import secure_url
-
-
-version = metadata.version("Lektor")
 
 
 @click.group(cls=AliasedGroup)
@@ -34,7 +31,7 @@ version = metadata.version("Lektor")
     callback=validate_language,
     help="The UI language to use (overrides autodetection).",
 )
-@click.version_option(prog_name="Lektor", version=version)
+@click.version_option(prog_name="Lektor", version=get_version())
 @pass_context
 def cli(ctx, project=None, language=None):
     """The lektor management application.
