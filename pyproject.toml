@@ -51,9 +51,19 @@ dependencies = [
     "watchfiles>=0.12",
     "Werkzeug>=2.1.0",
 ]
-optional-dependencies.ipython = [
+
+[dependency-groups]
+ipython = [
     "ipython",
     "traitlets",
+]
+
+dev = [
+    "pytest",
+    "pytest-mock",
+    "ruff",
+    "mypy",
+    "pre-commit",
 ]
 
 [project.scripts]
@@ -269,3 +279,8 @@ module = [
     "lektor.admin.*",
 ]
 warn_return_any = false
+
+[tool.ruff]
+exclude = [
+    "lektor/cli.py",
+]
