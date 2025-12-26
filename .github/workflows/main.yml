@@ -42,3 +42,16 @@ jobs:
         run: |
           uv sync
           make frontend/node_modules
+
+      - name: Test frontend
+        run: make test-js
+
+      - name: Test backend
+        env:
+          OUTDIR: build/qa-${{ matrix.python-version }}-${{ matrix.os-version }}-${{ matrix.node-version }}
+        run: |
+          uv run pytest -vvs -l -n auto \
+              --cov=${{ env.PACKAGE }} \
+              --cov-report=html:$OUTDIR/coverage --cov-report=xml:$OUTDIR/coverage.xml \
+              --junitxml=$OUTDIR/junit/junit.xml --html=$OUTDIR/junit/junit.html --self-contained-html \
+            tests
