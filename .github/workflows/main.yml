@@ -18,23 +18,19 @@ jobs:
       - name: Checkout [${{ matrix.os-version }}-${{ matrix.python-version }}-${{ matrix.node-version }}]
         uses: actions/checkout@v4
         with:
-          # WARNING!! this is important
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
-      # https://github.com/actions/setup-python
       - name: Setup Python toolchain ${{ matrix.python-version }}
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
-      # https://github.com/actions/setup-node
       - name: Setup node toolchain ${{ matrix.node-version}}
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
 
-      # https://github.com/astral-sh/setup-uv
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 

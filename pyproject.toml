@@ -60,9 +60,11 @@ ipython = [
 
 dev = [
     "build",
+    "hatchling",
     "mypy",
     "pre-commit",
     "pytest",
+    "pytest-click",
     "pytest-cov",
     "pytest-html",
     "pytest-mock",
