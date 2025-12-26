@@ -52,6 +52,7 @@ jobs:
         env:
           OUTDIR: build/qa-${{ matrix.python-version }}-${{ matrix.os-version }}-${{ matrix.node-version }}
         run: |
+          mkdir -p $OUTDIR
           uv run pytest -vvs -l \
               --cov=lektor \
               --cov-report=html:$OUTDIR/coverage --cov-report=xml:$OUTDIR/coverage.xml \
