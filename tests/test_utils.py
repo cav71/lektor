@@ -443,5 +443,6 @@ def _warning_line(warning: warnings.WarningMessage) -> str:
     ],
 )
 def test_untrusted_to_os_path(db_path, expected):
-    os_path = untrusted_to_os_path(db_path)
+    from pathlib import Path
+    os_path = untrusted_to_os_path(Path(db_path))
     assert os_path.split(os.sep) == expected.split("/")
