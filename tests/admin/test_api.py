@@ -116,6 +116,7 @@ def test_recordinfo(test_client):
     resp = test_client.get("/admin/api/recordinfo?path=%2F")
     assert resp.status_code == 200
     data = resp.get_json()
+    #breakpoint()
     assert any(att["id"] == "hello.txt" for att in data["attachments"])
     assert any(page["id"] == "blog" for page in data["children"])
     assert any(alt["alt"] == "de" for alt in data["alts"])

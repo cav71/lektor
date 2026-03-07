@@ -169,6 +169,7 @@ def get_record_info(validated: _PathAndAlt, ctx: LektorContext) -> Response:
     alt = validated.alt
     tree_item = ctx.tree.get(validated.path)
 
+    #breakpoint()
     return jsonify(
         id=tree_item.id,
         path=tree_item.path,

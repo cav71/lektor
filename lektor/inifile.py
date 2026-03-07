@@ -48,17 +48,24 @@ class IniFile:
             self.config.add_section(section)
         self.config[section][option] = value
 
-    def get_bool(self, name: str) -> bool:
-        value = (self.get(name) or "").lower()
+    def get_int(self, name: str, default: Any = None) -> bool | None:
+        breakpoint()
+        pass
+
+    def get_bool(self, name: str, default: Any = False) -> bool | None:
+        value = self.get(name)
+        if value is None:
+            return None
+            breakpoint()
+            raise KeyError(f"cannot find boolean in {name}")
         return bool({
-            "": False,
             "0": False,
             "no": False,
             "false": False,
             "1": True,
             "yes": True,
             "true": True,
-        }.get(value, False))
+        }.get(value, default))
 
 
     def save(self) -> None:

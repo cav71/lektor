@@ -1,7 +1,7 @@
 import errno
 import os
 
-from inifile import IniFile
+from lektor.inifile import IniFile
 
 from lektor.constants import PRIMARY_ALT
 from lektor.environment.expressions import Expression
@@ -60,7 +60,7 @@ class PaginationConfig:
         elif not isinstance(per_page, int):
             raise TypeError(f"per_page must be an int or None, not {per_page!r}")
         if per_page <= 0:
-            raise ValueError("per_page must be positive, not {per_page}")
+            raise ValueError(f"per_page must be positive, not {per_page}")
 
         self.per_page = per_page
         if url_suffix is None:
@@ -609,6 +609,7 @@ def iter_inis(path):
             if os.path.isfile(fn):
                 base = filename[:-4]
                 base = base.encode("utf-8").decode("ascii", "replace")
+                print(f"==> {fn}")
                 inifile = IniFile(fn)
                 yield base, inifile
     except OSError as e:
@@ -627,6 +628,13 @@ def load_datamodels(env):
     for path in paths:
         for model_id, inifile in iter_inis(path):
             data[model_id] = datamodel_data_from_ini(model_id, inifile)
+            print(f"==> {inifile.filename}")
+            if inifile.filename == "/Users/antonio/Projects/contabo/website/build/lektor/tests/demo-project/models/page.ini":
+                breakpoint()
+            if "filename" in data[model_id]:
+                data[model_id]["filename"] = str(data[model_id]["filename"])
+            import json
+            print(f"{json.dumps(data[model_id], indent=2, sort_keys=1)}")
 
     rv = {}
 

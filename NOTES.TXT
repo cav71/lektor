@@ -2,4 +2,10 @@ VIRTUAL_ENV=.venv uv run pytest -vvs -x  tests
 VIRTUAL_ENV=.venv uv run pytest -vvs -x  tests/admin/test_api.py
 VIRTUAL_ENV=.venv uv run pytest -vvs -x  tests/test_project.py
 
+VIRTUAL_ENV=.venv uv run pytest -vvs -x tests/test_pluginsystem.py
 1. lektor/utils.py untrusted_to_os_path
+
+o lektor/databags.py
+o lektor/pluginsystem.py
+
+VIRTUAL_ENV=.venv uv run pytest -vvs -x tests/admin/test_api.py
