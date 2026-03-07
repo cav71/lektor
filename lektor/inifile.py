@@ -24,15 +24,18 @@ class IniFile:
     def __getitem__(self, name: str) -> Any:
         return self.get(name)
 
+    def sections(self) -> list[str]:
+        return self.config.sections()
+
     def get(self, name: str, default: Any = None) -> Any:
         section, _, option = name.rpartition(".")
-        if section not in self.config.sections():
+        if section not in self.sections():
             return default
         return self.config[section].get(option, default)
 
     def section_as_dict(self, name: str) -> dict[str, Any]:
         result = {}
-        for section in self.config.sections():
+        for section in self.sections():
             if section != name:
                 continue
             for option in self.config[section]:
@@ -41,9 +44,14 @@ class IniFile:
 
     def __setitem__(self, name: str, value: Any) -> None:
         section, _, option = name.rpartition(".")
-        if section not in self.config.sections():
+        if section not in self.sections():
             self.config.add_section(section)
         self.config[section][option] = value
+
+    def get_bool(self, name: str) -> bool:
+        value = (self.get(name) or "").lower()
+        return bool({"": False, "yes": True, "true": True, "false": False, "no": False})
+
 
     def save(self) -> None:
         buffer = io.StringIO()
