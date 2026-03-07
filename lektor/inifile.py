@@ -50,7 +50,15 @@ class IniFile:
 
     def get_bool(self, name: str) -> bool:
         value = (self.get(name) or "").lower()
-        return bool({"": False, "yes": True, "true": True, "false": False, "no": False})
+        return bool({
+            "": False,
+            "0": False
+            "no": False
+            "false": False,
+            "1": True,
+            "yes": True,
+            "true": True,
+        }.get(value, False))
 
 
     def save(self) -> None:
