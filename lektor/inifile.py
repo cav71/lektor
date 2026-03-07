@@ -22,8 +22,17 @@ class IniFile:
     def __getitem__(self, name):
         return self.get(name)
 
-    def get(self, name, default: Any = None) -> None:
+    def get(self, name: str, default: Any = None) -> None:
         section, _, option = name.rpartition(".")
         if section not in self.config.sections():
             return fallback
-        return self.config[section].get(option)
+        return self.config[section].get(option, default)
+
+    def section_as_dict(self, name: str):
+        result = {}
+        for section in self.config.sections():
+            if section != name:
+                continue
+            for option in self.config[section]:
+                result[option] = self.config[section][option]
+        return result
