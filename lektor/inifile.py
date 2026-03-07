@@ -14,11 +14,16 @@ class IniFile:
         self.config = ConfigParser()
         self.is_new = not bool(self.config.read(self.filename))
 
-    def get(self, key, fallback: Any = None):
-        section, _, option = key.partition(".")
-        if key == "project.path":
-            return self.filename
+    def __iter__(self):
+        for section in self.config.sections():
+            for option in self.config.options(section):
+                yield f"{section}.{option}"
 
+    def __getitem__(self, name):
+        return self.get(name)
+
+    def get(self, name, default: Any = None) -> None:
+        section, _, option = name.rpartition(".")
         if section not in self.config.sections():
             return fallback
         return self.config[section].get(option)

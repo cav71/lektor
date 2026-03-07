@@ -6,10 +6,7 @@ import sys
 from enum import Enum
 from pathlib import Path
 
-#from inifile import IniFile
-from lektor.inifile import IniFile
-
-
+from inifile import IniFile
 from werkzeug.utils import cached_property
 
 from lektor.environment import Environment
@@ -38,7 +35,6 @@ class Project:
         if inifile.is_new:
             return None
 
-        breakpoint()
         name = (
             inifile.get("project.name")
             or os.path.basename(filename).rsplit(".")[0].title()
