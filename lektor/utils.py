@@ -159,17 +159,16 @@ def is_path_child_of(a, b, strict=True):
 
 
 def untrusted_to_os_path(path: str | bytes | Path) -> str:
-    breakpoint()
     pathlib_path = None
     if not isinstance(path, (str, Path)):
         pathlib_path = Path(path.decode(fs_enc, "replace"))
-        
+
     if not isinstance(path, Path):
         path = Path(path)
-        
+
     clean_path = path.resolve()
     assert str(clean_path).startswith("/")
-    return clean_path[1:].replace("/", os.path.sep)
+    return str(clean_path)[1:].replace("/", os.path.sep)
 
 
 def is_path(path):
