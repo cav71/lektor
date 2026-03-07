@@ -52,8 +52,8 @@ class IniFile:
         value = (self.get(name) or "").lower()
         return bool({
             "": False,
-            "0": False
-            "no": False
+            "0": False,
+            "no": False,
             "false": False,
             "1": True,
             "yes": True,
