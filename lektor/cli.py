@@ -19,7 +19,10 @@ from lektor.project import Project
 from lektor.utils import secure_url
 
 
-version = metadata.version("Lektor")
+try:
+    version = metadata.version("Lektor")
+except metadata.PackageNotFoundError:
+    version = "0.0.0"
 
 
 @click.group(cls=AliasedGroup)
