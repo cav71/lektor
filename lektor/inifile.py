@@ -49,8 +49,10 @@ class IniFile:
         self.config[section][option] = value
 
     def get_int(self, name: str, default: Any = None) -> bool | None:
-        breakpoint()
-        pass
+        value = self.get(name, default)
+        if value is None:
+            return None
+        return int(value)
 
     def get_bool(self, name: str, default: Any = False) -> bool | None:
         value = self.get(name)

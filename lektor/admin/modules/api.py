@@ -16,7 +16,6 @@ import marshmallow
 import marshmallow_dataclass as mdcls
 from flask import Blueprint
 from flask import current_app
-from flask import jsonify
 from flask import make_response
 from flask import request
 from flask import Response
@@ -40,6 +39,10 @@ bp = Blueprint("api", __name__, url_prefix="/admin/api")
 
 LEKTOR_CONFIG: ContextVar[Config] = ContextVar("lektor_config")
 
+
+def jsonify(obj):
+    from flask import jsonify
+    return jsonify(obj)
 
 @bp.url_value_preprocessor
 def pass_lektor_context(endpoint: str | None, values: dict[str, Any] | None) -> None:
@@ -169,7 +172,6 @@ def get_record_info(validated: _PathAndAlt, ctx: LektorContext) -> Response:
     alt = validated.alt
     tree_item = ctx.tree.get(validated.path)
 
-    #breakpoint()
     return jsonify(
         id=tree_item.id,
         path=tree_item.path,

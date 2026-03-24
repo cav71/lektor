@@ -2,6 +2,7 @@ import errno
 import os
 
 from lektor.inifile import IniFile
+#from inifile import IniFile
 
 from lektor.constants import PRIMARY_ALT
 from lektor.environment.expressions import Expression
@@ -628,13 +629,13 @@ def load_datamodels(env):
     for path in paths:
         for model_id, inifile in iter_inis(path):
             data[model_id] = datamodel_data_from_ini(model_id, inifile)
-            print(f"==> {inifile.filename}")
-            if inifile.filename == "/Users/antonio/Projects/contabo/website/build/lektor/tests/demo-project/models/page.ini":
-                breakpoint()
+            #print(f"==> {inifile.filename}")
+            #if inifile.filename == "/Users/antonio/Projects/contabo/website/build/lektor/tests/demo-project/models/page.ini":
+            #    breakpoint()
             if "filename" in data[model_id]:
                 data[model_id]["filename"] = str(data[model_id]["filename"])
-            import json
-            print(f"{json.dumps(data[model_id], indent=2, sort_keys=1)}")
+            #import json
+            #print(f"{json.dumps(data[model_id], indent=2, sort_keys=1)}")
 
     rv = {}
 
