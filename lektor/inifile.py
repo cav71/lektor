@@ -1,3 +1,4 @@
+from configparser import ConfigParser, MissingSectionHeaderError
 import dataclasses as dc
 import io
 from pathlib import Path
@@ -6,19 +7,29 @@ import pickle
 import os
 
 
+def config_parser_load(filename: str | Path) -> tuple[ConfigParser, bool]:
+    path = Path(filename)
+    config = ConfigParser()
+    try:
+        return config, not bool(config.read(path))
+    except MissingSectionHeaderError:
+        text = path.read_text()
+        config.read_string(f"[DEFAULT]\n{text}")
+        return config, False
+
+
+
 @dc.dataclass
 class IniFileNew:
     filename: str
     is_new: bool = False
 
     def __post_init__(self) -> None:
-        from configparser import ConfigParser
 
         #self.filename = Path(self.filename).absolute()
         self.filename = os.path.abspath(self.filename)
 
-        self.config = ConfigParser()
-        self.is_new = not bool(self.config.read(self.filename))
+        self.config, self.is_new = config_parser_load(self.filename)
 
     def __iter__(self) -> Iterator[str]:
         for section in self.config.sections():
@@ -27,6 +38,11 @@ class IniFileNew:
 
     def __getitem__(self, name: str) -> Any:
         return self.get(name)
+
+    def items(self):
+        if not self.config.sections():
+            return self.config.defaults().items()
+        raise RntimeError("cannot call .items")
 
     def sections(self) -> list[str]:
         return self.config.sections()
@@ -132,6 +148,7 @@ class IniFileRecord:
 
     def _xwrite(self, data):
         self._fp.write_bytes(pickle.dumps(data))
+
 
     def __getattr__(self, name):
         data = self._xread()

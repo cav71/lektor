@@ -1,12 +1,23 @@
+from collections import OrderedDict
 import pytest
 from lektor.i18n import get_i18n_block
 from inifile import IniFile as IniFileOrig
 from lektor.inifile import IniFileNew
 
+from lektor.utils import decode_flat_data
 
 @pytest.fixture(scope="session")
 def project_path(data_path):
     return data_path / "demo-project"
+
+
+@pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
+def test_initfile_no_header(tmp_path, IniFile):
+    path = tmp_path / "project.ini"
+    path.write_text("""
+foo = bar
+    """)
+    assert {'foo': 'bar'} == decode_flat_data(IniFile(path).items(), dict_cls=OrderedDict)
 
 
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
