@@ -1,8 +1,7 @@
 import pytest
-from inifile import IniFile as IniFileOrig
-
 from lektor.i18n import get_i18n_block
-from lektor.inifile import IniFile as IniFileNew
+from inifile import IniFile as IniFileOrig
+from lektor.inifile import IniFileNew
 
 
 @pytest.fixture(scope="session")
@@ -32,6 +31,9 @@ def test_me(project_path, IniFile):
         inifile, "alternatives.de.name"
     )
 
+    assert "Deutsch" == inifile.get("alternatives.de.name[de]")
+    assert "Englisch" == inifile.get("alternatives.en.name[de]")
+
     assert {
         "name": "Demo Project",
         "excluded_assets": "foo*",
@@ -44,3 +46,4 @@ def test_me(project_path, IniFile):
         "primary": "yes",
         "locale": "en_US",
     } == inifile.section_as_dict("alternatives.en")
+    pass

@@ -4,6 +4,7 @@ import re
 from collections import OrderedDict
 from urllib.parse import urlsplit
 
+from inifile import IniFile
 from lektor.inifile import IniFile
 from werkzeug.utils import cached_property
 

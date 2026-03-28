@@ -4,6 +4,7 @@ import textwrap
 import pytest
 from iniconfig import IniConfig
 from inifile import IniFile
+from lektor.inifile import IniFile
 
 import lektor.quickstart
 from lektor.cli import cli

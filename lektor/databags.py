@@ -4,6 +4,7 @@ import os
 from collections import OrderedDict
 
 from inifile import IniFile
+from lektor.inifile import IniFile
 
 from lektor.context import get_ctx
 from lektor.utils import decode_flat_data

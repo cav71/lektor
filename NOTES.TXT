@@ -11,6 +11,11 @@ uv run pytest -vvs -x  tests
 uv run pytest -vvs -x  tests/admin/test_api.py
 uv run pytest -vvs -x  tests/test_project.py
 
+
+Failures:
+PYTHONPATH=$(pwd) pytest -vvs tests/test_environment.py
+PYTHONPATH=$(pwd) pytest -vvs tests/test_pluginsystem.py
+
 VIRTUAL_ENV=.venv uv run pytest -vvs -x tests/test_pluginsystem.py
 1. lektor/utils.py untrusted_to_os_path
 

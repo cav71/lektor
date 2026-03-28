@@ -9,6 +9,7 @@ from pathlib import Path
 from weakref import ref as weakref
 
 from inifile import IniFile
+from lektor.inifile import IniFile
 
 from lektor.context import get_ctx
 from lektor.utils import process_extra_flags

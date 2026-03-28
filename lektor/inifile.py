@@ -2,17 +2,21 @@ import dataclasses as dc
 import io
 from pathlib import Path
 from typing import Any, Iterator
+import pickle
+import os
 
 
 @dc.dataclass
-class IniFile:
-    filename: Path
+class IniFileNew:
+    filename: str
     is_new: bool = False
 
     def __post_init__(self) -> None:
         from configparser import ConfigParser
 
-        self.filename = Path(self.filename).absolute()
+        #self.filename = Path(self.filename).absolute()
+        self.filename = os.path.abspath(self.filename)
+
         self.config = ConfigParser()
         self.is_new = not bool(self.config.read(self.filename))
 
@@ -74,3 +78,82 @@ class IniFile:
         buffer = io.StringIO()
         self.config.write(buffer)
         self.filename.write_text(buffer.getvalue())
+
+"""
+{
+  "__getattr__": [
+    "items",
+    "get",
+    "get_bool",
+    "get_int",
+    "is_new",
+    "sections",
+    "section_as_dict",
+    "save",
+    "filename"
+  ],
+  "__getitem__": [
+    "theme.name",
+    "alternatives.de.name[de]",
+    "alternatives.en.name[de]",
+    "test_setting",
+    "author.name",
+    "model.name",
+    "author.email",
+    "model.label",
+    "alternatives.en.name",
+    "alternatives.de.name",
+    "block.name"
+  ],
+  "__setitem__": [
+    "packages.lektor-webpack-support",
+    "is_cached"
+  ]
+}
+"""
+
+
+class IniFileRecord:
+    def __init__(self, *args, **kwargs):
+        from inifile import IniFile as IF
+        from pathlib import Path
+        self._class = IF(*args, **kwargs)
+        self._fp = Path("/Users/antonio/Projects/contabo/website/dev/lektor/out.txt")
+
+    def _xread(self):
+        data = {
+            "__getattr__": set(),
+            "__getitem__": set(),
+            "__setitem__": set(),
+        }
+        if self._fp.exists():
+            data = pickle.loads(self._fp.read_bytes())
+        return data
+
+    def _xwrite(self, data):
+        self._fp.write_bytes(pickle.dumps(data))
+
+    def __getattr__(self, name):
+        data = self._xread()
+        data["__getattr__"].add(name)
+        self._xwrite(data)
+        return getattr(self._class, name)
+
+    def __iter__(self):
+        return getattr(self._class, "__iter__")()
+
+    def __getitem__(self, name):
+        data = self._xread()
+        data["__getitem__"].add(name)
+        self._xwrite(data)
+        return self._class[name]
+
+    def __setitem__(self, name, value):
+        data = self._xread()
+        data["__setitem__"].add(name)
+        self._xwrite(data)
+        self._class[name] = value
+
+
+
+IniFile = IniFileNew
