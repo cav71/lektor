@@ -37,7 +37,7 @@ class IniFileNew:
                 yield f"{section}.{option}"
 
     def __getitem__(self, name: str) -> Any:
-        return self.get(name)
+        return self.get(name, self.config.defaults().get(name, None))
 
     def items(self):
         if not self.config.sections():

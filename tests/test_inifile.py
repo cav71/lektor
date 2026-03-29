@@ -17,7 +17,9 @@ def test_initfile_no_header(tmp_path, IniFile):
     path.write_text("""
 foo = bar
     """)
-    assert {'foo': 'bar'} == decode_flat_data(IniFile(path).items(), dict_cls=OrderedDict)
+    inifile = IniFile(path)
+    assert {'foo': 'bar'} == decode_flat_data(inifile.items(), dict_cls=OrderedDict)
+    assert "bar" == inifile["foo"]
 
 
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
