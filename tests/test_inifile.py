@@ -1,8 +1,11 @@
 from collections import OrderedDict
 import pytest
 from lektor.i18n import get_i18n_block
-from inifile import IniFile as IniFileOrig
-from lektor.inifile import IniFileNew
+from lektor.inifile import IniFile as IniFileNew
+try:
+    from inifile import IniFile as IniFileOrig
+except ModuleNotFoundError:
+    IniFileOrig = None
 
 from lektor.utils import decode_flat_data
 
@@ -19,6 +22,7 @@ def samples_path(data_path):
 
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
 def test_initfile_items_no_header(samples_path, IniFile):
+    if not IniFile: pytest.skip("no inifile present")
     inifile = IniFile(samples_path / "inifile-empty.ini")
     assert [] == list(inifile.items())
     return
@@ -28,6 +32,7 @@ def test_initfile_items_no_header(samples_path, IniFile):
 
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
 def test_initfile_items_header_only(samples_path, IniFile):
+    if not IniFile: pytest.skip("no inifile present")
     inifile = IniFile(samples_path / "inifile-only-defaults.ini")
     assert [
         ("default", "value1"),
@@ -38,6 +43,7 @@ def test_initfile_items_header_only(samples_path, IniFile):
 
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
 def test_initfile_items_header_and_sections(samples_path, IniFile):
+    if not IniFile: pytest.skip("no inifile present")
     inifile = IniFile(samples_path / "inifile-with-defaults.ini")
     expected = [
         ("default", "value1"),
@@ -57,6 +63,7 @@ def test_initfile_items_header_and_sections(samples_path, IniFile):
 
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
 def test_initfile_get(samples_path, IniFile):
+    if not IniFile: pytest.skip("no inifile present")
     inifile = IniFile(samples_path / "inifile-with-defaults.ini")
 
     assert "Produktion" == inifile.get("servers.production.name[de]") 
@@ -73,6 +80,7 @@ def test_initfile_get(samples_path, IniFile):
 
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
 def test_initfile_items_header_sections_only(samples_path, IniFile):
+    if not IniFile: pytest.skip("no inifile present")
     inifile = IniFile(samples_path / "inifile-without-defaults.ini")
     expected = [
         ("project.name", "Demo Project"),
@@ -100,6 +108,7 @@ def test_initfile_items_header_sections_only(samples_path, IniFile):
 
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
 def test_me(project_path, IniFile):
+    if not IniFile: pytest.skip("no inifile present")
     path = project_path / "Website.lektorproject"
     assert path.exists()
 

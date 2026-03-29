@@ -6,7 +6,6 @@ import sys
 from enum import Enum
 from pathlib import Path
 
-from inifile import IniFile
 from lektor.inifile import IniFile
 from werkzeug.utils import cached_property
 

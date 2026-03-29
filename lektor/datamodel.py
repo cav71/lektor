@@ -1,7 +1,6 @@
 import errno
 import os
 
-from inifile import IniFile
 from lektor.inifile import IniFile
 
 from lektor.constants import PRIMARY_ALT

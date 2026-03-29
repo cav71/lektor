@@ -8,7 +8,6 @@ from importlib import metadata
 from pathlib import Path
 from weakref import ref as weakref
 
-from inifile import IniFile
 from lektor.inifile import IniFile
 
 from lektor.context import get_ctx

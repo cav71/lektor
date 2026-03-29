@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any, Generator, Iterator
 import pickle
 import os
-from inifile import IniFile as IniFileOld
 
 
 GLOBAL_NAME = "xyz"
@@ -107,3 +106,8 @@ class IniFile:
         self.config.write(buffer)
         with open(self.filename, "w") as fp:
             fp.write(buffer.getvalue())
+
+
+def __getitem__(name):
+    breakpoint()
+    pass
