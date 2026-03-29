@@ -6,11 +6,11 @@ import sys
 from enum import Enum
 from pathlib import Path
 
+from inifile import IniFile
+from lektor.inifile import IniFile
 from werkzeug.utils import cached_property
 
 from lektor.environment import Environment
-from inifile import IniFile
-from lektor.inifile import IniFile
 from lektor.utils import comma_delimited
 from lektor.utils import get_cache_dir
 from lektor.utils import untrusted_to_os_path

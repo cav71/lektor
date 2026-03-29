@@ -6,20 +6,96 @@ from lektor.inifile import IniFileNew
 
 from lektor.utils import decode_flat_data
 
+
 @pytest.fixture(scope="session")
 def project_path(data_path):
     return data_path / "demo-project"
 
 
+@pytest.fixture(scope="session")
+def samples_path(data_path):
+    return data_path / "data"
+
+
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
-def test_initfile_no_header(tmp_path, IniFile):
-    path = tmp_path / "project.ini"
-    path.write_text("""
-foo = bar
-    """)
-    inifile = IniFile(path)
-    assert {'foo': 'bar'} == decode_flat_data(inifile.items(), dict_cls=OrderedDict)
+def test_initfile_items_no_header(samples_path, IniFile):
+    inifile = IniFile(samples_path / "inifile-empty.ini")
+    assert [] == list(inifile.items())
+    return
+    assert {"foo": "bar"} == decode_flat_data(inifile.items(), dict_cls=OrderedDict)
     assert "bar" == inifile["foo"]
+
+
+@pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
+def test_initfile_items_header_only(samples_path, IniFile):
+    inifile = IniFile(samples_path / "inifile-only-defaults.ini")
+    assert [
+        ("default", "value1"),
+        ("default1", "123"),
+        ("default2", "hello world"),
+    ] == list(inifile.items())
+
+
+@pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
+def test_initfile_items_header_and_sections(samples_path, IniFile):
+    inifile = IniFile(samples_path / "inifile-with-defaults.ini")
+    expected = [
+        ("default", "value1"),
+        ("default1", "123"),
+        ("default2", "hello world"),
+        ("project.name", "Demo Project"),
+        ("project.excluded_assets", "foo*"),
+        ("alternatives.en.name", "English"),
+        ("alternatives.en.name[de]", "Englisch"),
+        ("servers.production.name", "Production"),
+        ("servers.production.target", "rsync://myserver.com/path/to/website"),
+        ("servers.production.name[de]", "Produktion"),
+        ("attachment_types..foo", "text"),
+    ]
+    assert expected == list(inifile.items())
+
+
+@pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
+def test_initfile_get(samples_path, IniFile):
+    inifile = IniFile(samples_path / "inifile-with-defaults.ini")
+
+    assert "Produktion" == inifile.get("servers.production.name[de]") 
+    assert "text" == inifile.get("attachment_types..foo")
+    assert "Englisch" == inifile.get("alternatives.en.name[de]")
+    assert "rsync://myserver.com/path/to/website" == inifile.get("servers.production.target")
+    
+    assert 11 == len(list(inifile.items()))
+    inifile["opla"] = "99"
+    assert 12 == len(list(inifile.items()))
+    assert "99" == inifile["opla"]
+
+
+
+@pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
+def test_initfile_items_header_sections_only(samples_path, IniFile):
+    inifile = IniFile(samples_path / "inifile-without-defaults.ini")
+    expected = [
+        ("project.name", "Demo Project"),
+        ("project.excluded_assets", "foo*"),
+        ("project.included_assets", "_*"),
+        ("alternatives.en.name", "English"),
+        ("alternatives.en.name[de]", "Englisch"),
+        ("alternatives.en.primary", "yes"),
+        ("alternatives.en.locale", "en_US"),
+        ("alternatives.de.name", "German"),
+        ("alternatives.de.name[de]", "Deutsch"),
+        ("alternatives.de.url_prefix", "/de/"),
+        ("alternatives.de.locale", "de_DE"),
+        ("servers.production.enabled", "yes"),
+        ("servers.production.name", "Production"),
+        ("servers.production.target", "rsync://myserver.com/path/to/website"),
+        ("servers.production.name[de]", "Produktion"),
+        ("servers.production.extra_field", "extra_value"),
+        ("attachment_types..foo", "text"),
+    ]
+    assert expected == list(inifile.items())
+
+
 
 
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])

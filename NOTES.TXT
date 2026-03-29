@@ -13,7 +13,7 @@ uv run pytest -vvs -x  tests/test_project.py
 
 
 Failures:
-PYTHONPATH=$(pwd) pytest -vvs tests/test_pluginsystem.py::TestPlugin::test_get_config
+PYTHONPATH=$(pwd) pytest -vvs tests/test_pluginsystem.py::TestPlugin::test_get_config_returns_cached_value
 
 PYTHONPATH=$(pwd) pytest -vvs tests/test_environment.py
 PYTHONPATH=$(pwd) pytest -vvs tests/test_pluginsystem.py
