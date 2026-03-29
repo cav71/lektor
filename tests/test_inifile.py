@@ -107,7 +107,7 @@ def test_initfile_items_header_sections_only(samples_path, IniFile):
 
 
 @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
-def test_me(project_path, IniFile):
+def test_project_parsing(project_path, IniFile):
     if not IniFile: pytest.skip("no inifile present")
     path = project_path / "Website.lektorproject"
     assert path.exists()
@@ -145,3 +145,19 @@ def test_me(project_path, IniFile):
         "locale": "en_US",
     } == inifile.section_as_dict("alternatives.en")
     pass
+
+
+# @pytest.mark.parametrize("IniFile", [IniFileOrig, IniFileNew])
+# def test_save(tmp_path, project_path, IniFile):
+#     if not IniFile: pytest.skip("no inifile present")
+#     inifile = IniFile(str(tmp_path / "inifile-only-defaults.ini"))
+#     path = tmp_path / "out.txt"
+#     path.write_text("")
+#     if hasattr(inifile, "_changes"):
+#         inifile._changes = True
+#     inifile.filename = str(path)
+#     breakpoint()
+#     inifile.save()
+#     assert "" == path.read_text()
+#     pass
+

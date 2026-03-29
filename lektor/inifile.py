@@ -105,7 +105,7 @@ class IniFile:
             }.get(value, default)
         )
 
-    def save(self) -> None:
+    def save(self, create_folder=False) -> None:
         raise NotImplementedError("not ready")
         buffer = io.StringIO()
         self.config.write(buffer)
