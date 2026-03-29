@@ -22,7 +22,6 @@ def config_parser_load(filename: str | Path) -> tuple[ConfigParser, bool]:
         return config, False
 
 
-
 @dc.dataclass
 class IniFile:
     filename: str
@@ -48,7 +47,11 @@ class IniFile:
         while section.endswith("."):
             section, option = section[:-1], f".{option}"
         if not section:
-            return self.config[GLOBAL_NAME][option] if option in self.config[GLOBAL_NAME] else default
+            return (
+                self.config[GLOBAL_NAME][option]
+                if option in self.config[GLOBAL_NAME]
+                else default
+            )
         if section not in self.sections():
             return default
         return self.config[section].get(option, default)
@@ -91,23 +94,20 @@ class IniFile:
         value = self.get(name)
         if value is None:
             return None
-        return bool({
-            "0": False,
-            "no": False,
-            "false": False,
-            "1": True,
-            "yes": True,
-            "true": True,
-        }.get(value, default))
-
+        return bool(
+            {
+                "0": False,
+                "no": False,
+                "false": False,
+                "1": True,
+                "yes": True,
+                "true": True,
+            }.get(value, default)
+        )
 
     def save(self) -> None:
+        raise NotImplementedError("not ready")
         buffer = io.StringIO()
         self.config.write(buffer)
         with open(self.filename, "w") as fp:
             fp.write(buffer.getvalue())
-
-
-def __getitem__(name):
-    breakpoint()
-    pass

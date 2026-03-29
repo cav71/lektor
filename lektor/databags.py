@@ -3,8 +3,9 @@ import json
 import os
 from collections import OrderedDict
 
-from lektor.context import get_ctx
 from lektor.inifile import IniFile
+
+from lektor.context import get_ctx
 from lektor.utils import decode_flat_data
 from lektor.utils import iter_dotted_path_prefixes
 from lektor.utils import merge
